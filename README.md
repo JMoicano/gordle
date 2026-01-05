@@ -107,7 +107,7 @@ The repository includes a sample-app module demonstrating:
 ## 🤝 Contributing
 
 Contributions are welcome!
-Please read the CONTRIBUTING.md before submitting pull requests.
+Please read the [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull requests.
 
 ---
 
