@@ -25,7 +25,7 @@ mavenPublishing {
     signAllPublications()
 
     coordinates(
-        groupId = "io.github.jmoicano",
+        groupId = "dev.jmoicano",
         artifactId = "gordle-engine",
         version = "0.1.2"
     )
