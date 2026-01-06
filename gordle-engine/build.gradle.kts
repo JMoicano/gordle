@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    id("com.vanniktech.maven.publish") version "0.35.0"
+    alias(libs.plugins.vanniktech.maven.publish)
 }
 
 group = "io.github.jmoicano"
