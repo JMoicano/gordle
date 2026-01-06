@@ -1,5 +1,9 @@
 # Gordle 🟩🟨⬛
 
+[![CI](https://github.com/jmoicano/gordle/actions/workflows/ci.yml/badge.svg)](https://github.com/SEU_USUARIO/gordle/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.jmoicano/gordle-engine)](https://central.sonatype.com/artifact/io.github.jmoicano/gordle-engine)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 **Gordle** is an open-source, modular toolkit for building Wordle-like word games on Android.
 
 It provides a reusable game engine and customizable UI components, allowing developers to create their own word games with full control over rules, visuals, and dictionaries.
