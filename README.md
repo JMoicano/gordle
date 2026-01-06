@@ -58,7 +58,7 @@ In the future, you will be able to add Gordle via Gradle:
 
 ```kotlin
 dependencies {
-    implementation("dev.jmoicano:gordle-engine:x.y.z")
+    implementation("dev.jmoicano:gordle-engine:0.1.3")
     implementation("dev.jmoicano:gordle-ui-compose:x.y.z")
 }
 ```
