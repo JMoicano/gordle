@@ -1,19 +1,15 @@
 plugins {
-    kotlin("jvm") version "2.2.21"
-    `maven-publish`
-    signing
+    kotlin("jvm")
+    id("maven-publish")
+    id("signing")
 }
 
 group = "io.github.jmoicano"
 version = "0.1.0"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation(libs.junit.jupiter)
 }
 
 kotlin {
