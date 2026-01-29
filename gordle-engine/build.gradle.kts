@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.jmoicano"
-version = "0.1.3"
+version = "0.1.4"
 
 dependencies {
     testImplementation(kotlin("test"))
@@ -27,7 +27,7 @@ mavenPublishing {
     coordinates(
         groupId = "dev.jmoicano",
         artifactId = "gordle-engine",
-        version = "0.1.3"
+        version = "0.1.4"
     )
 
     pom {
