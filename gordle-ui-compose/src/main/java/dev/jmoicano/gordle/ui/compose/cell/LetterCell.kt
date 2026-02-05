@@ -14,6 +14,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -23,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.jmoicano.gordle.ui.compose.cell.scheme.ClassicWordleScheme
+import dev.jmoicano.gordle.ui.compose.theme.LocalLetterCellColorScheme
 
 @Composable
 fun LetterCell(
@@ -30,7 +32,7 @@ fun LetterCell(
     state: LetterState,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = LocalTextStyle.current,
-    colorScheme: LetterCellColorScheme = ClassicWordleScheme,
+    colorScheme: LetterCellColorScheme = LocalLetterCellColorScheme.current,
     shape: Shape = RectangleShape,
     borderWidth: Dp = 1.dp,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -68,19 +70,22 @@ fun LetterCell(
 @Preview(showBackground = true)
 @Composable
 fun LetterCellPreview() {
-
-    Row(
-        modifier = Modifier.padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    CompositionLocalProvider(
+        LocalLetterCellColorScheme provides ClassicWordleScheme
     ) {
-        LetterState.entries.forEach { state ->
-            LetterCell(
-                letter = if (state == LetterState.Empty) null else 'A',
-                state = state,
-                modifier = Modifier.size(48.dp),
-                textStyle = MaterialTheme.typography.titleLarge,
-                shape = RoundedCornerShape(4.dp)
-            )
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LetterState.entries.forEach { state ->
+                LetterCell(
+                    letter = if (state == LetterState.Empty) null else 'A',
+                    state = state,
+                    modifier = Modifier.size(48.dp),
+                    textStyle = MaterialTheme.typography.titleLarge,
+                    shape = RoundedCornerShape(4.dp)
+                )
+            }
         }
     }
 }
