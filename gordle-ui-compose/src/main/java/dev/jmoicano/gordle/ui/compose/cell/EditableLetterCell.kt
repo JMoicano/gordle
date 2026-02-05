@@ -1,84 +1,201 @@
 package dev.jmoicano.gordle.ui.compose.cell
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import dev.jmoicano.gordle.ui.compose.theme.GordleTheme
 import dev.jmoicano.gordle.ui.compose.theme.LocalLetterCellColorScheme
 
 @Composable
 fun EditableLetterCell(
-    value: Char?,
+    value: String,
+    onValueChange: (String) -> Unit,
     state: LetterState,
-    onValueChange: (Char?) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    requestFocus: Boolean = false,
-    onFocusChanged: ((Boolean) -> Unit)? = null,
     textStyle: TextStyle = LocalTextStyle.current,
     colorScheme: LetterCellColorScheme = LocalLetterCellColorScheme.current,
-    shape: Shape = RectangleShape
+    shape: Shape = RectangleShape,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    val focusRequester = remember { FocusRequester() }
+    val colors = colorScheme.colorsFor(state)
 
-    LaunchedEffect(requestFocus) {
-        if (requestFocus) {
-            focusRequester.requestFocus()
-        }
+    val canEdit = enabled && when (state) {
+        LetterState.Empty,
+        LetterState.Filled -> true
+        LetterState.Correct,
+        LetterState.Misplaced,
+        LetterState.Wrong -> false
     }
 
     BasicTextField(
-        value = value?.toString().orEmpty(),
-        onValueChange = { text ->
-            onValueChange(text.lastOrNull()?.uppercaseChar())
+        value = value,
+        onValueChange = { newValue ->
+            if (canEdit) {
+                onValueChange(
+                    newValue
+                        .take(1)
+                        .uppercase()
+                )
+            }
         },
         enabled = enabled,
+        readOnly = !canEdit,
         singleLine = true,
-        textStyle = textStyle,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Ascii,
-            capitalization = KeyboardCapitalization.Characters,
-            imeAction = ImeAction.Next
+        textStyle = textStyle.copy(
+            color = colors.content,
+            textAlign = TextAlign.Center,
         ),
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .onFocusChanged { state ->
-                onFocusChanged?.invoke(state.isFocused)
-            }
-    ) { innerTextField ->
-
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            LetterCell(
-                letter = value,
-                state = state,
-                modifier = Modifier.fillMaxSize(),
-                textStyle = textStyle,
-                colorScheme = colorScheme,
-                shape = shape
-            )
-
+        interactionSource = interactionSource,
+        cursorBrush = if (canEdit) {
+            SolidColor(colors.content)
+        } else {
+            SolidColor(Color.Transparent)
+        },
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Characters,
+            keyboardType = KeyboardType.Ascii
+        ),
+        decorationBox = { innerTextField ->
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier
+                    .background(
+                        color = colors.background,
+                        shape = shape
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = colors.border,
+                        shape = shape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 innerTextField()
             }
         }
+    )
+}
+
+@Preview(
+    name = "EditableLetterCell – Empty",
+    showBackground = true
+)
+@Composable
+private fun EditableLetterCellPreview_Empty() {
+    GordleTheme {
+        var value by remember { mutableStateOf("") }
+
+        EditableLetterCell(
+            value = value,
+            state = LetterState.Empty,
+            onValueChange = { value = it },
+            modifier = Modifier.size(56.dp)
+        )
     }
 }
+
+@Preview(
+    name = "EditableLetterCell – Filled",
+    showBackground = true
+)
+@Composable
+private fun EditableLetterCellPreview_Filled() {
+    GordleTheme {
+        var value by remember { mutableStateOf("A") }
+
+        EditableLetterCell(
+            value = value,
+            state = LetterState.Filled,
+            onValueChange = { value = it },
+            modifier = Modifier.size(56.dp)
+        )
+    }
+}
+
+@Preview(
+    name = "EditableLetterCell – Correct",
+    showBackground = true
+)
+@Composable
+private fun EditableLetterCellPreview_Correct() {
+    GordleTheme {
+        EditableLetterCell(
+            value = "R",
+            state = LetterState.Correct,
+            onValueChange = {},
+            modifier = Modifier.size(56.dp)
+        )
+    }
+}
+
+@Preview(
+    name = "EditableLetterCell – Misplaced",
+    showBackground = true
+)
+@Composable
+private fun EditableLetterCellPreview_Misplaced() {
+    GordleTheme {
+        EditableLetterCell(
+            value = "O",
+            state = LetterState.Misplaced,
+            onValueChange = {},
+            modifier = Modifier.size(56.dp)
+        )
+    }
+}
+
+@Preview(
+    name = "EditableLetterCell – Wrong",
+    showBackground = true
+)
+@Composable
+private fun EditableLetterCellPreview_Wrong() {
+    GordleTheme {
+        EditableLetterCell(
+            value = "X",
+            state = LetterState.Wrong,
+            onValueChange = {},
+            modifier = Modifier.size(56.dp)
+        )
+    }
+}
+
+@Preview(
+    name = "EditableLetterCell – Disabled",
+    showBackground = true
+)
+@Composable
+private fun EditableLetterCellPreview_Disabled() {
+    GordleTheme {
+        EditableLetterCell(
+            value = "",
+            state = LetterState.Empty,
+            enabled = false,
+            onValueChange = {},
+            modifier = Modifier.size(56.dp)
+        )
+    }
+}
+
